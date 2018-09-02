@@ -1,6 +1,5 @@
 root = document.documentElement
-themeName = 'one-dark-ui'
-
+themeName = 'one-afterglow-ui'
 
 module.exports =
   activate: (state) ->
