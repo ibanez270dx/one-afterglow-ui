@@ -5,8 +5,8 @@
 @theme-tabsizing: ~'theme-@{ui-theme-name}-tabsizing';
 @theme-dockButtons: ~'theme-@{ui-theme-name}-dock-buttons';
 @theme-stickyHeaders: ~'theme-@{ui-theme-name}-sticky-headers';
+@theme-projectColors: ~'theme-@{ui-theme-name}-project-colors';
 @theme-closeButton: ~'theme-@{ui-theme-name}-tab-close-button';
-
 
 // Tabs ----------------------------------------------
 
@@ -153,5 +153,22 @@
         z-index: 0;
       }
     }
+  }
+}
+
+// Project Colors ------------------------------
+
+[@{theme-projectColors}="active"] {
+  atom-dock .tab-bar .tab {
+    border: 0;
+
+    .title {
+      font-variant: small-caps;
+      font-weight: 600;
+    }
+  }
+
+  atom-panel.header {
+    border-bottom: 0;
   }
 }

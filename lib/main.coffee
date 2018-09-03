@@ -99,25 +99,24 @@ setProjectColors = (projectColors) ->
 
     for projectColor in projectColors.split(";")
       if projectColor.split(":")[0] is project
+        root.setAttribute("theme-#{themeName}-project-colors", "active")
+
         color = projectColor.split(":")[1] # color from configuration
-        darkened = tinycolor(color).darken(30).toString() # darkened color for title bar
+        darkened = tinycolor(color).darken().toString() # darkened color for title bar
 
         # tree-view project title
-        document.querySelector("atom-dock .tab-bar .tab").setAttribute("style", "background-color:#{color}; border-left: 0; border-top: 0; border-right: 0; border-bottom: 1px solid #{darkened}")
-        document.querySelector("atom-dock .tab-bar .tab .title").setAttribute("style", "font-variant:small-caps; color:#{textColorForBg(color)}")
+        document.querySelector("atom-dock .tab-bar .tab").setAttribute("style", "background-color:#{color}; border-bottom: 1px solid #{darkened}")
+        document.querySelector("atom-dock .tab-bar .tab .title").setAttribute("style", "color:#{getReadableColorFor(color)}")
         document.querySelector("atom-dock .tab-bar .tab .title").innerHTML = project
 
         # atom window title bar
-        document.querySelector("atom-panel.header").setAttribute("style", "border-bottom:0;")
-        document.querySelector("atom-panel.header .title-bar").setAttribute("style", "background-color:#{darkened}; border-bottom: 1px solid #{color}; color:#{textColorForBg(darkened)}")
+        document.querySelector("atom-panel.header .title-bar").setAttribute("style", "background-color:#{darkened}; border-bottom: 1px solid #{color}; color:#{getReadableColorFor(darkened)}")
   else
     unsetProjectColors()
 
 unsetProjectColors = ->
-  root.removeAttribute("data-projectcolor")
+  root.removeAttribute("theme-#{themeName}-project-colors")
 
-textColorForBg = (color) ->
-  if tinycolor(color).isLight()
-    tinycolor(color).darken(60).desaturate(5).toString()
-  else
-    tinycolor(color).lighten(60).saturate(5).toString()
+getReadableColorFor = (color) ->
+  choices = tinycolor(color).monochromatic(4).map (color) -> color.desaturate(50).toHexString()
+  tinycolor.mostReadable(color, choices, {includeFallbackColors: true, level: 'AAA', size: 'small'}).toHexString()
