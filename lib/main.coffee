@@ -1,3 +1,4 @@
+tinycolor = require("tinycolor2")
 root = document.documentElement
 themeName = 'one-afterglow-ui'
 
@@ -18,6 +19,9 @@ module.exports =
     atom.config.observe "#{themeName}.stickyHeaders", (value) ->
       setStickyHeaders(value)
 
+    atom.config.observe "#{themeName}.projectColors", (value) ->
+      setProjectColors(value)
+
     # DEPRECATED: This can be removed at some point (added in Atom 1.17/1.18ish)
     # It removes `layoutMode`
     if atom.config.get("#{themeName}.layoutMode")
@@ -29,6 +33,7 @@ module.exports =
     unsetTabCloseButton()
     unsetHideDockButtons()
     unsetStickyHeaders()
+    unsetProjectColors()
 
 
 # Font Size -----------------------
@@ -83,3 +88,36 @@ setStickyHeaders = (stickyHeaders) ->
 
 unsetStickyHeaders = ->
   root.removeAttribute("theme-#{themeName}-sticky-headers")
+
+
+# Project Colors -----------------------
+
+setProjectColors = (projectColors) ->
+  if projectColors
+    # get project name (root project folder name)
+    project = atom.project.getPaths().map((path) -> path.split('/')[path.split('/').length - 1])[0]
+
+    for projectColor in projectColors.split(";")
+      if projectColor.split(":")[0] is project
+        color = projectColor.split(":")[1] # color from configuration
+        darkened = tinycolor(color).darken(30).toString() # darkened color for title bar
+
+        # tree-view project title
+        document.querySelector("atom-dock .tab-bar .tab").setAttribute("style", "background-color:#{color}; border-left: 0; border-top: 0; border-right: 0; border-bottom: 1px solid #{darkened}")
+        document.querySelector("atom-dock .tab-bar .tab .title").setAttribute("style", "font-variant:small-caps; color:#{textColorForBg(color)}")
+        document.querySelector("atom-dock .tab-bar .tab .title").innerHTML = project
+
+        # atom window title bar
+        document.querySelector("atom-panel.header").setAttribute("style", "border-bottom:0;")
+        document.querySelector("atom-panel.header .title-bar").setAttribute("style", "background-color:#{darkened}; border-bottom: 1px solid #{color}; color:#{textColorForBg(darkened)}")
+  else
+    unsetProjectColors()
+
+unsetProjectColors = ->
+  root.removeAttribute("data-projectcolor")
+
+textColorForBg = (color) ->
+  if tinycolor(color).isLight()
+    tinycolor(color).darken(60).desaturate(5).toString()
+  else
+    tinycolor(color).lighten(60).saturate(5).toString()

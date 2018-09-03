@@ -73,6 +73,16 @@
       "type": "boolean",
       "default": "false",
       "order": 5
+    },
+    "projectColors": {
+      "title": "Project Colors",
+      "description": "Colorize the tree-view project header to easily distinguish between multiple atom windows and projects based on root directory name:\n\nEx: myproject:#00FF00;otherproject:#5D89B5",
+      "type": "string",
+      "default": "",
+      "order": 6
     }
+  },
+  "dependencies": {
+    "tinycolor2": "^1.4.1"
   }
 }
